@@ -38,6 +38,11 @@ class Format(unittest.TestCase):
         self.assertEqual(get_quality("audio/mpeg", -1, mode="abr", reverse=False), 320)
         self.assertEqual(get_quality("audio/mpeg", -2, mode="cbr", reverse=False), 256)
 
+        self.assertEqual(get_quality("audio/x-vorbis", 0), -0.1)
+        self.assertEqual(get_quality("audio/x-vorbis", 7), 0.6)
+        self.assertEqual(get_quality("audio/x-vorbis", 11), 1.0)
+        self.assertEqual(get_quality("audio/x-vorbis", 0.6, reverse=True), 7)
+
     def test_get_default_quality(self):
         self.assertEqual(get_default_quality("audio/mpeg"), 2)
         self.assertEqual(get_default_quality("audio/mpeg", "vbr"), 2)

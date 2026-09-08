@@ -106,6 +106,22 @@ class GUIIntegration(unittest.TestCase):
         self.assertTrue(os.path.isdir("tests/tmp/"))
         self.assertTrue(os.path.isfile("tests/tmp/a.opus"))
 
+    def test_vorbis_encoder(self):
+        gio_settings = get_gio_settings()
+        gio_settings.set_double("vorbis-quality", 0.8)
+
+        launch(["tests/test data/audio/a.wav"])
+        self.assertEqual(settings["main"], "gui")
+        window = win[0]
+
+        window.prefs.change_mime_type("audio/x-vorbis")
+        window.on_convert_button_clicked()
+
+        self._wait_for_conversion_to_finish(window)
+
+        self.assertTrue(os.path.isdir("tests/tmp/"))
+        self.assertTrue(os.path.isfile("tests/tmp/a.ogg"))
+
     def test_conversion(self):
         gio_settings = get_gio_settings()
         gio_settings.set_int("opus-bitrate", 192)
