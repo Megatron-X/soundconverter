@@ -79,6 +79,20 @@ class GUIIntegration(unittest.TestCase):
             shutil.rmtree("tests/tmp")
         available_elements.update(original_available_elements)
 
+    def test_invalid_mp3_quality_falls_back_to_default(self):
+        gio_settings = get_gio_settings()
+        gio_settings.set_string("mp3-mode", "cbr")
+        gio_settings.set_int("mp3-cbr-quality", 200)
+
+        launch()
+        window = win[0]
+
+        self.assertEqual(gio_settings.get_int("mp3-cbr-quality"), 320)
+        self.assertEqual(
+            window.prefs.mp3_quality.get_active(),
+            get_quality("audio/mpeg", 320, "cbr", reverse=True),
+        )
+
     def _wait_for_conversion_to_finish(self, window):
         queue = window.converter_queue
         while not queue.finished:

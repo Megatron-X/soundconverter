@@ -602,6 +602,7 @@ class PreferencesDialog(GladeWindow):
         index = get_quality("audio/mpeg", quality, mode, reverse=True)
         if index is None:
             quality = get_default_quality("audio/mpeg", mode)
+            self.settings.set_int(quality_keys[mode], quality)
             index = get_quality("audio/mpeg", quality, mode, reverse=True)
 
         self.mp3_quality.set_active(index)
