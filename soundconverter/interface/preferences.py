@@ -29,7 +29,11 @@ from gi.repository import Gdk, GLib, Gtk
 from soundconverter.gstreamer.converter import available_elements
 from soundconverter.interface.gladewindow import GladeWindow
 from soundconverter.util.fileoperations import beautify_uri, filename_to_uri
-from soundconverter.util.formats import get_bitrate_from_settings, get_quality
+from soundconverter.util.formats import (
+    get_bitrate_from_settings,
+    get_default_quality,
+    get_quality,
+)
 from soundconverter.util.logger import logger
 from soundconverter.util.namegenerator import (
     TargetNameGenerator,
@@ -596,6 +600,10 @@ class PreferencesDialog(GladeWindow):
         quality = self.settings.get_int(quality_keys[mode])
 
         index = get_quality("audio/mpeg", quality, mode, reverse=True)
+        if index is None:
+            quality = get_default_quality("audio/mpeg", mode)
+            index = get_quality("audio/mpeg", quality, mode, reverse=True)
+
         self.mp3_quality.set_active(index)
 
         self.update_example()
