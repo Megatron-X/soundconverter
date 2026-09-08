@@ -312,7 +312,7 @@ class BatchUtils(unittest.TestCase):
         )
         self.assertFalse(
             validate_args(
-                {"main": "batch", "output-path": ".", "format": "opus", "quality": 600}
+                {"main": "batch", "output-path": ".", "format": "opus", "quality": 651}
             )
         )
         self.assertFalse(

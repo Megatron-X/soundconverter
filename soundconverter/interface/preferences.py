@@ -45,7 +45,7 @@ encoders = [
     ("audio/mpeg", "lamemp3enc", "MP3 (.mp3)"),
     ("audio/x-flac", "flacenc", "FLAC Lossless (.flac)"),
     ("audio/x-wav", "wavenc", "MS Wave (.wav)"),
-    ("audio/x-m4a", "fdkaacenc,faac,avenc_aac", "AAC (.m4a)"),
+    ("audio/x-m4a", "fdkaacenc", "AAC (.m4a)"),
     ("audio/ogg; codecs=opus", "opusenc", "Opus (.opus)"),
     ("audio/x-ms-wma", "avenc_wmav2", "WMA (.wma)"),
 ]
@@ -185,15 +185,32 @@ class PreferencesDialog(GladeWindow):
         if self.settings.get_boolean("vorbis-oga-extension"):
             self.vorbis_oga_extension.set_active(True)
 
-        widget = self.aac_quality
-        quality = self.settings.get_int("aac-quality")
-        quality_setting = get_quality("audio/x-m4a", quality, reverse=True)
-        widget.set_active(quality_setting)
+        vbr_preset = self.settings.get_int("aac-vbr-preset")
+        self.aac_vbr_preset.set_active(vbr_preset - 1)
 
-        widget = self.opus_quality
-        quality = self.settings.get_int("opus-bitrate")
-        quality_setting = get_quality("audio/ogg; codecs=opus", quality, reverse=True)
-        widget.set_active(quality_setting)
+        self.aac_afterburner.set_active(
+            self.settings.get_boolean("aac-afterburner"),
+        )
+
+        self.mp3_engine_quality.set_active_id(
+            self.settings.get_string("mp3-engine-quality"),
+        )
+
+        self.opus_bitrate.set_value(
+            self.settings.get_int("opus-bitrate"),
+        )
+        self.opus_bitrate_type.set_active_id(
+            self.settings.get_string("opus-bitrate-type"),
+        )
+        self.opus_audio_type.set_active_id(
+            self.settings.get_string("opus-audio-type"),
+        )
+        self.opus_bandwidth.set_active_id(
+            self.settings.get_string("opus-bandwidth"),
+        )
+        self.opus_frame_size.set_active_id(
+            f"{self.settings.get_double('opus-frame-size'):g}",
+        )
 
         widget = self.wma_quality
         quality = self.settings.get_int("wma-bitrate")
@@ -460,14 +477,50 @@ class PreferencesDialog(GladeWindow):
         self.settings.set_boolean("vorbis-oga-extension", toggle.get_active())
         self.update_example()
 
-    def on_aac_quality_changed(self, combobox):
-        quality = get_quality("audio/x-m4a", combobox.get_active())
-        self.settings.set_int("aac-quality", quality)
+    def on_aac_vbr_preset_changed(self, combobox):
+        active = combobox.get_active()
+        if active == -1:
+            return
+
+        self.settings.set_int("aac-vbr-preset", active + 1)
         self.update_example()
 
-    def on_opus_quality_changed(self, combobox):
-        quality = get_quality("audio/ogg; codecs=opus", combobox.get_active())
-        self.settings.set_int("opus-bitrate", quality)
+    def on_aac_afterburner_toggled(self, toggle):
+        self.settings.set_boolean(
+            "aac-afterburner",
+            toggle.get_active(),
+        )
+        self.update_example()
+
+    def on_opus_bitrate_changed(self, spinbutton):
+        self.settings.set_int(
+            "opus-bitrate",
+            spinbutton.get_value_as_int(),
+        )
+        self.update_example()
+
+    def on_opus_bitrate_type_changed(self, combobox):
+        active_id = combobox.get_active_id()
+        if active_id is not None:
+            self.settings.set_string("opus-bitrate-type", active_id)
+        self.update_example()
+
+    def on_opus_audio_type_changed(self, combobox):
+        active_id = combobox.get_active_id()
+        if active_id is not None:
+            self.settings.set_string("opus-audio-type", active_id)
+        self.update_example()
+
+    def on_opus_bandwidth_changed(self, combobox):
+        active_id = combobox.get_active_id()
+        if active_id is not None:
+            self.settings.set_string("opus-bandwidth", active_id)
+        self.update_example()
+
+    def on_opus_frame_size_changed(self, combobox):
+        active_id = combobox.get_active_id()
+        if active_id is not None:
+            self.settings.set_double("opus-frame-size", float(active_id))
         self.update_example()
 
     def on_wma_quality_changed(self, combobox):
@@ -491,17 +544,60 @@ class PreferencesDialog(GladeWindow):
 
     def change_mp3_mode(self, mode):
         keys = {"cbr": 0, "abr": 1, "vbr": 2}
-        self.mp3_mode.set_active(keys[mode])
 
-        keys = {
+        if self.mp3_mode.get_active() != keys[mode]:
+            self.mp3_mode.set_active(keys[mode])
+
+        model = self.mp3_quality.get_model()
+        model.clear()
+
+        if mode == "vbr":
+            labels = (
+                "V9 (Lowest)",
+                "V8",
+                "V7",
+                "V6",
+                "V5",
+                "V4",
+                "V3",
+                "V2",
+                "V1",
+                "V0 (Highest)",
+            )
+        else:
+            labels = (
+                "8 kbps",
+                "16 kbps",
+                "24 kbps",
+                "32 kbps",
+                "40 kbps",
+                "48 kbps",
+                "56 kbps",
+                "64 kbps",
+                "80 kbps",
+                "96 kbps",
+                "112 kbps",
+                "128 kbps",
+                "160 kbps",
+                "192 kbps",
+                "224 kbps",
+                "256 kbps",
+                "320 kbps",
+            )
+
+        for label in labels:
+            model.append([label])
+
+        quality_keys = {
             "cbr": "mp3-cbr-quality",
             "abr": "mp3-abr-quality",
             "vbr": "mp3-vbr-quality",
         }
-        quality = self.settings.get_int(keys[mode])
+        quality = self.settings.get_int(quality_keys[mode])
 
         index = get_quality("audio/mpeg", quality, mode, reverse=True)
         self.mp3_quality.set_active(index)
+
         self.update_example()
 
     def on_mp3_mode_changed(self, combobox):
@@ -510,6 +606,11 @@ class PreferencesDialog(GladeWindow):
         self.change_mp3_mode(mode)
 
     def on_mp3_quality_changed(self, combobox):
+        index = combobox.get_active()
+
+        if index < 0:
+            return
+
         keys = {
             "cbr": "mp3-cbr-quality",
             "abr": "mp3-abr-quality",
@@ -517,9 +618,14 @@ class PreferencesDialog(GladeWindow):
         }
         mode = self.settings.get_string("mp3-mode")
 
-        bitrate = get_quality("audio/mpeg", combobox.get_active(), mode)
-        self.settings.set_int(keys[mode], bitrate)
+        quality = get_quality("audio/mpeg", index, mode)
+        self.settings.set_int(keys[mode], quality)
         self.update_example()
+
+    def on_mp3_engine_quality_changed(self, combobox):
+        active_id = combobox.get_active_id()
+        if active_id is not None:
+            self.settings.set_string("mp3-engine-quality", active_id)
 
     def on_resample_rate_changed(self, combobox):
         selected = combobox.get_active()

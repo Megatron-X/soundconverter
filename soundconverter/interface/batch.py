@@ -189,28 +189,24 @@ def validate_args(options):
             # optional; otherwise default quality values will be used
             if mime_type == "audio/mpeg":
                 if mode in ["abr", "cbr"]:
-                    if quality > 320 or quality < 64:
-                        logger.error("mp3 cbr/abr bitrate should be between 64 and 320")
+                    if quality > 320 or quality < 8:
+                        logger.error("mp3 cbr/abr bitrate should be between 8 and 320")
                         return False
                 else:
                     if quality > 9 or quality < 0:
                         logger.error(
-                            "mp3 vbr quality should be between 9 (low) and 0 (hight)",
+                            "mp3 vbr quality should be between 9 (low) and 0 (high)",
                         )
                         return False
 
             elif mime_type == "audio/x-vorbis":
-                if quality < 0 or quality > 1:
-                    logger.error("ogg quality should be between 0.0 and 1.0")
+                if quality < -0.1 or quality > 1.0:
+                    logger.error("ogg quality should be between -0.1 and 1.0")
                     return False
 
             elif mime_type == "audio/x-m4a":
-                # supports arbitrary bitrates
-                # source: https://en.wikipedia.org/wiki/Advanced_Audio_Coding
-                # Our used encoder seems to cap somewhere between 400 and
-                # 440 kbps though
-                if quality < 0:
-                    logger.error("m4a bitrate should be larger than 0")
+                if quality < 1 or quality > 5:
+                    logger.error("m4a FDK-AAC VBR preset should be between 1 and 5")
                     return False
 
             elif mime_type == "audio/x-flac":
@@ -225,8 +221,8 @@ def validate_args(options):
 
             elif mime_type == "audio/ogg; codecs=opus":
                 # source: https://wiki.hydrogenaud.io/index.php?title=Opus
-                if quality < 6 or quality > 510:
-                    logger.error("opus bitrate should be between 6 and 510")
+                if quality < 4 or quality > 650:
+                    logger.error("opus bitrate should be between 4 and 650")
                     return False
 
     resample = options.get("output-resample", None)

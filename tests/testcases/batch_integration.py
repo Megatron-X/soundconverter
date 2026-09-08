@@ -25,6 +25,7 @@ import os
 import shutil
 import time
 import unittest
+from gettext import gettext as _
 from unittest.mock import patch
 
 from util import launch, reset_settings
@@ -62,11 +63,11 @@ class BatchIntegration(unittest.TestCase):
                 "-b",
                 "tests/test data/audio/a.wav",
                 "-o",
-                "tests/tmp/64",
+                "tests/tmp/1",
                 "-f",
                 "m4a",
                 "-q",
-                "64",
+                "1",
             ]
         )
         launch(
@@ -74,21 +75,21 @@ class BatchIntegration(unittest.TestCase):
                 "-b",
                 "tests/test data/audio/a.wav",
                 "-o",
-                "tests/tmp/320",
+                "tests/tmp/5",
                 "-f",
                 "m4a",
                 "-q",
-                "320",
+                "5",
             ]
         )
         self.assertEqual(settings["main"], "batch")
         self.assertEqual(settings["debug"], False)
         self.assertEqual(settings["recursive"], False)
-        self.assertTrue(os.path.isfile("tests/tmp/320/a.m4a"))
-        self.assertTrue(os.path.isfile("tests/tmp/64/a.m4a"))
-        size_320 = os.path.getsize("tests/tmp/320/a.m4a")
-        size_64 = os.path.getsize("tests/tmp/64/a.m4a")
-        self.assertLess(size_64, size_320)
+        self.assertTrue(os.path.isfile("tests/tmp/5/a.m4a"))
+        self.assertTrue(os.path.isfile("tests/tmp/1/a.m4a"))
+        size_5 = os.path.getsize("tests/tmp/5/a.m4a")
+        size_1 = os.path.getsize("tests/tmp/1/a.m4a")
+        self.assertLess(size_1, size_5)
 
     def discover(self, path):
         """Run a Discoverer task on the path and return the sound_file.
@@ -338,9 +339,13 @@ class BatchIntegration(unittest.TestCase):
         # is omitted and not reconstructed. e.g. "audio" might also be an
         # album name, in which case the old structure should be replaced
         # with the provided one.
-        self.assertTrue(os.path.isfile("tests/tmp/test_artist/test_album.m4a"))
-        self.assertTrue(os.path.isfile("tests/tmp/Unknown Artist/Unknown Album.m4a"))
+        unknown_artist = _("Unknown Artist")
+        unknown_album = _("Unknown Album")
 
+        self.assertTrue(os.path.isfile("tests/tmp/test_artist/test_album.m4a"))
+        self.assertTrue(
+            os.path.isfile(f"tests/tmp/{unknown_artist}/{unknown_album}.m4a")
+        )
     def test_pattern_2(self):
         launch(
             [
@@ -356,8 +361,14 @@ class BatchIntegration(unittest.TestCase):
                 "m4a",
             ]
         )
-        self.assertTrue(os.path.isfile("tests/tmp/test_artist/Unknown Bar/c.m4a"))
-        self.assertTrue(os.path.isfile("tests/tmp/Unknown Artist/Unknown Bar/a.m4a"))
+        unknown_artist = _("Unknown Artist")
+
+        self.assertTrue(
+            os.path.isfile("tests/tmp/test_artist/Unknown Bar/c.m4a")
+        )
+        self.assertTrue(
+            os.path.isfile(f"tests/tmp/{unknown_artist}/Unknown Bar/a.m4a")
+        )
 
     def test_skip_overwrite(self):
         path = "tests/tmp/c.m4a"

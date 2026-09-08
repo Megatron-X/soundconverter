@@ -25,6 +25,7 @@ import os
 import unittest
 import urllib.error
 import urllib.parse
+from gettext import gettext as _
 
 from gi.repository import Gio
 from util import reset_settings
@@ -739,9 +740,13 @@ class TargetNameGeneratorTestCases(unittest.TestCase):
         self.g.replace_messy_chars = False
         self.g.create_subfolders = False
         self.g.selected_folder = "file:///foo"
+
+        unknown_artist = _("Unknown Artist")
+        unknown_album = _("Unknown Album")
+
         self.assertEqual(
             self.g.generate_target_uri(self.s, True),
-            "/foo/Unknown Artist/Unknown Album/Unknown Artist/file/00/00/"
+            f"/foo/{unknown_artist}/{unknown_album}/{unknown_artist}/file/00/00/"
             "Unknown Genre/Unknown Date/Unknown Year/0/0/ogg/file/file.ogg",
         )
 

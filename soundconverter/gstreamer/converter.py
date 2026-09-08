@@ -68,9 +68,8 @@ def find_available_elements():
         ("xingmux", "VBR tags", "mp3-vbr-tags", UGLY),
         ("lamemp3enc", "MP3", "mp3-enc", GOOD),
         ("mp4mux", "AAC", "aac-mux", GOOD),
+        ("aacparse", "AAC parser", "aac-parse", BAD),
         ("opusenc", "Opus", "opus-enc", BASE),
-        ("faac", "AAC", "aac-enc", BAD),
-        ("avenc_aac", "AAC", "aac-enc", LIBAV),
         ("fdkaacenc", "AAC", "aac-enc", BAD),
     ]
 
@@ -94,9 +93,11 @@ def find_available_elements():
 
     if "oggmux" not in available_elements:
         available_elements.discard("vorbisenc")
-    if "mp4mux" not in available_elements:
-        available_elements.discard("faac")
-        available_elements.discard("avenc_aac")
+    if (
+        "mp4mux" not in available_elements
+        or "aacparse" not in available_elements
+    ):
+        available_elements.discard("fdkaacenc")
     if "asfmux" not in available_elements:
         available_elements.discard("avenc_wmav2")
 
@@ -139,7 +140,17 @@ def create_mp3_encoder():
     mp3_mode = mode
     mp3_quality = get_gio_settings().get_int(quality[mode])
 
-    cmd = "lamemp3enc encoding-engine-quality=2 "
+    engine_quality = get_gio_settings().get_string("mp3-engine-quality")
+    engine_quality_values = {
+        "fast": 0,
+        "standard": 1,
+        "high": 2,
+    }
+
+    cmd = (
+        "lamemp3enc "
+        f"encoding-engine-quality={engine_quality_values[engine_quality]} "
+    )
 
     if mp3_mode is not None:
         properties = {
@@ -165,38 +176,47 @@ def create_mp3_encoder():
 
 
 def create_aac_encoder():
-    """Return an aac encoder for the gst pipeline string."""
-    aac_quality = get_gio_settings().get_int("aac-quality")
+    """Return an FDK-AAC VBR encoder for the gst pipeline string."""
+    settings = get_gio_settings()
 
-    # it seemed like I couldn't get vbr to work with any of these, not even
-    # with rate-control and quality of faac or with maxrate of avenc_aac.
-    # Or it was audacious not displaying the current vbr rate correctly.
-    bitrate = aac_quality * 1000
+    vbr_preset = settings.get_int("aac-vbr-preset")
+    afterburner = settings.get_boolean("aac-afterburner")
 
-    # list of recommended aac encoders:
-    # https://wiki.hydrogenaud.io/index.php?title=AAC_encoders
-    if "fdkaacenc" in available_elements:
-        return f"fdkaacenc bitrate={bitrate} ! mp4mux"
+    presets = {
+        1: "very-low",
+        2: "low",
+        3: "medium",
+        4: "high",
+        5: "very-high",
+    }
 
-    encoder = "faac" if "faac" in available_elements else "avenc_aac"
-    logger.warning(
-        "fdkaacenc is recommended for aac conversion but it is not "
-        "available. It can be installed with gst-plugins-bad. "
-        f"Using {encoder} instead.",
+    preset = presets.get(vbr_preset, "very-high")
+
+    return (
+        f"fdkaacenc rate-control=vbr "
+        f"vbr-preset={preset} "
+        f"afterburner={'true' if afterburner else 'false'} "
+        "! aacparse ! mp4mux"
     )
-
-    if "faac" in available_elements:
-        return f"faac bitrate={bitrate} rate-control=2 ! mp4mux"
-
-    return f"avenc_aac bitrate={bitrate} ! mp4mux"
 
 
 def create_opus_encoder():
-    """Return an opus encoder for the gst pipeline string."""
-    opus_quality = get_gio_settings().get_int("opus-bitrate")
+    """Return an Opus encoder configured from the advanced Opus settings."""
+    settings = get_gio_settings()
+
+    bitrate = settings.get_int("opus-bitrate")
+    bitrate_type = settings.get_string("opus-bitrate-type")
+    audio_type = settings.get_string("opus-audio-type")
+    bandwidth = settings.get_string("opus-bandwidth")
+    frame_size = settings.get_double("opus-frame-size")
+
     return (
-        f"opusenc bitrate={opus_quality * 1000} bitrate-type=vbr "
-        "bandwidth=auto ! oggmux"
+        f"opusenc bitrate={bitrate * 1000} "
+        f"bitrate-type={bitrate_type} "
+        f"audio-type={audio_type} "
+        f"bandwidth={bandwidth} "
+        f"frame-size={frame_size:g} "
+        "complexity=10 ! oggmux"
     )
 
 

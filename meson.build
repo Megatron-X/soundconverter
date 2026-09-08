@@ -101,7 +101,7 @@ install_data(
 
 install_data(
   files('soundconverter/__init__.py'),
-  install_dir: py_inst.get_install_dir()
+  install_dir: join_paths(py_inst.get_install_dir(), 'soundconverter')
 )
 
 # install_data(

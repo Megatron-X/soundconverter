@@ -33,19 +33,17 @@ from soundconverter.util.settings import get_gio_settings
 
 class Format(unittest.TestCase):
     def test_get_quality(self):
-        self.assertEqual(get_quality("audio/mpeg", 0, "cbr"), 64)
-        self.assertEqual(get_quality("audio/x-m4a", 1, "thetgdfgsfd"), 96)
-        self.assertEqual(get_quality("audio/x-m4a", 256, reverse=True), 4)
-        self.assertEqual(get_quality("audio/mpeg", 320, mode="abr", reverse=True), 5)
+        self.assertEqual(get_quality("audio/mpeg", 0, "cbr"), 8)
+        self.assertEqual(get_quality("audio/mpeg", 320, mode="abr", reverse=True), 16)
         self.assertEqual(get_quality("audio/mpeg", -1, mode="abr", reverse=False), 320)
         self.assertEqual(get_quality("audio/mpeg", -2, mode="cbr", reverse=False), 256)
 
     def test_get_default_quality(self):
-        self.assertEqual(get_default_quality("audio/mpeg"), 0)
-        self.assertEqual(get_default_quality("audio/mpeg", "vbr"), 0)
+        self.assertEqual(get_default_quality("audio/mpeg"), 2)
+        self.assertEqual(get_default_quality("audio/mpeg", "vbr"), 2)
         self.assertEqual(get_default_quality("audio/mpeg", "cbr"), 320)
-        self.assertEqual(get_default_quality("audio/mpeg", "abr"), 320)
-        self.assertEqual(get_default_quality("audio/x-m4a"), 400)
+        self.assertEqual(get_default_quality("audio/mpeg", "abr"), 192)
+        self.assertEqual(get_default_quality("audio/x-m4a"), 3)
 
     def test_get_bitrate_from_settings(self):
         # Use bitrates that are not part of the indexing triggered by the ui,
@@ -55,7 +53,7 @@ class Format(unittest.TestCase):
         get_gio_settings().set_int("mp3-abr-quality", 200)
         get_gio_settings().set_string("mp3-mode", "abr")
         self.assertEqual(get_bitrate_from_settings(), "~200 kbps")
-        get_gio_settings().set_int("mp3-vbr-quality", 200)
+        get_gio_settings().set_int("mp3-vbr-quality", 5)
         get_gio_settings().set_string("mp3-mode", "vbr")
         self.assertEqual(get_bitrate_from_settings(), "N/A")
         get_gio_settings().set_int("mp3-cbr-quality", 200)
@@ -67,8 +65,8 @@ class Format(unittest.TestCase):
         self.assertEqual(get_bitrate_from_settings(), "~123 kbps")
 
         get_gio_settings().set_string("output-mime-type", "audio/x-m4a")
-        get_gio_settings().set_int("aac-quality", 234)
-        self.assertEqual(get_bitrate_from_settings(), "~234 kbps")
+        get_gio_settings().set_int("aac-vbr-preset", 5)
+        self.assertEqual(get_bitrate_from_settings(), "N/A")
 
         get_gio_settings().set_string("output-mime-type", "audio/x-vorbis")
         get_gio_settings().set_double("vorbis-quality", 0.99)

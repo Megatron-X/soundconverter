@@ -58,34 +58,98 @@
     </key>
     <key name="mp3-mode" type="s">
       <default>'vbr'</default>
+      <choices>
+        <choice value="vbr"/>
+        <choice value="abr"/>
+        <choice value="cbr"/>
+      </choices>
       <summary>MP3 mode</summary>
-      <description></description>
+      <description>LAME MP3 encoding mode: VBR, ABR, CBR</description>
     </key>
     <key name="mp3-cbr-quality" type="i">
-      <default>192</default>
-      <summary>MP3 CBR quality</summary>
-      <description></description>
+      <default>320</default>
+      <range min="8" max="320"/>
+      <summary>MP3 CBR bitrate</summary>
+      <description>Target bitrate in kbit/s for MP3 constant bitrate encoding</description>
     </key>
     <key name="mp3-abr-quality" type="i">
       <default>192</default>
-      <summary>MP3 ABR quality</summary>
-      <description></description>
+      <range min="8" max="320"/>
+      <summary>MP3 ABR bitrate</summary>
+      <description>Target bitrate in kbit/s for MP3 average bitrate encoding</description>
     </key>
     <key name="mp3-vbr-quality" type="i">
-      <default>3</default>
+      <default>2</default>
+      <range min="0" max="9"/>
       <summary>MP3 VBR quality</summary>
-      <description></description>
+      <description>LAME VBR quality from V0 (highest) to V9 (lowest)</description>
     </key>
-    <key name="aac-quality" type="i">
-      <default>192</default>
-      <summary>AAC quality</summary>
-      <description></description>
+    <key name="mp3-engine-quality" type="s">
+      <default>'high'</default>
+      <choices>
+        <choice value="fast"/>
+        <choice value="standard"/>
+        <choice value="high"/>
+      </choices>
+      <summary>MP3 encoding engine quality</summary>
+      <description>Quality and speed setting used by the LAME MP3 encoding engine</description>
+    </key>
+    <key name="aac-vbr-preset" type="i">
+      <default>3</default>
+      <range min="1" max="5"/>
+      <summary>FDK-AAC VBR quality</summary>
+      <description>FDK-AAC VBR preset from 1 (very low) to 5 (very high)</description>
+    </key>
+    <key name="aac-afterburner" type="b">
+      <default>true</default>
+      <summary>FDK-AAC Afterburner</summary>
+      <description>Enable the FDK-AAC Afterburner quality enhancement</description>
     </key>
     <key name="opus-bitrate" type="i">
-      <default>96</default>
+      <default>192</default>
+      <range min="4" max="650"/>
       <summary>Opus bitrate</summary>
-      <description></description>
-    </key>    <key name="wma-bitrate" type="i">
+      <description>Target Opus bitrate in kbps</description>
+    </key>
+    <key name="opus-bitrate-type" type="s">
+      <default>'vbr'</default>
+      <choices>
+        <choice value="vbr"/>
+        <choice value="constrained-vbr"/>
+        <choice value="cbr"/>
+      </choices>
+      <summary>Opus bitrate mode</summary>
+      <description>Opus rate control mode</description>
+    </key>
+    <key name="opus-audio-type" type="s">
+      <default>'generic'</default>
+      <choices>
+        <choice value="generic"/>
+        <choice value="voice"/>
+      </choices>
+      <summary>Opus audio type</summary>
+     <description>Type of audio to optimize for</description>
+    </key>
+    <key name="opus-bandwidth" type="s">
+      <default>'auto'</default>
+      <choices>
+        <choice value="auto"/>
+        <choice value="narrowband"/>
+        <choice value="mediumband"/>
+        <choice value="wideband"/>
+        <choice value="superwideband"/>
+        <choice value="fullband"/>
+      </choices>
+      <summary>Opus bandwidth</summary>
+      <description>Opus audio bandwidth</description>
+    </key>
+    <key name="opus-frame-size" type="d">
+      <default>20.0</default>
+      <range min="2.5" max="60.0"/>
+      <summary>Opus frame size</summary>
+      <description>Opus frame duration in milliseconds</description>
+    </key>
+    <key name="wma-bitrate" type="i">
       <default>192</default>
       <summary>WMA bitrate</summary>
       <description></description>

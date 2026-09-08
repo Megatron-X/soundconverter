@@ -94,7 +94,7 @@ def get_quality_setting_name():
     else:
         setting_name = {
             "audio/x-vorbis": "vorbis-quality",
-            "audio/x-m4a": "aac-quality",
+            "audio/x-m4a": "aac-vbr-preset",
             "audio/ogg; codecs=opus": "opus-bitrate",
             "audio/x-flac": "flac-compression",
             "audio/x-ms-wma": "wma-bitrate",
@@ -116,13 +116,27 @@ def get_bitrate_from_settings():
     approx = True
 
     if mime_type == "audio/x-vorbis":
-        quality = max(0, min(1, settings.get_double("vorbis-quality"))) * 10
-        quality = round(quality)
-        bitrates = (64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 500)
-        bitrate = bitrates[quality]
+        quality = settings.get_double("vorbis-quality")
+        quality = max(-0.1, min(1.0, quality))
+        quality_index = round((quality + 0.1) * 10)
+        bitrates = (
+            45,   # Q-1
+            64,   # Q0
+            80,   # Q1
+            96,   # Q2
+            112,  # Q3
+            128,  # Q4
+            160,  # Q5
+            192,  # Q6
+            224,  # Q7
+            256,  # Q8
+            320,  # Q9
+            500,  # Q10
+        )
+        bitrate = bitrates[quality_index]
 
     elif mime_type == "audio/x-m4a":
-        bitrate = settings.get_int("aac-quality")
+        return "N/A"
 
     elif mime_type == "audio/ogg; codecs=opus":
         bitrate = settings.get_int("opus-bitrate")
@@ -176,15 +190,15 @@ def get_default_quality(mime, mode="vbr"):
     mode : string
         one of 'cbr', 'abr' and 'vbr' for mp3
     """
-    # get 6-tuple of qualities
+    # Default quality values for each output format
     default = {
-        "audio/x-vorbis": 1.0,
-        "audio/x-m4a": 400,
+        "audio/x-vorbis": 0.6,
+        "audio/x-m4a": 3,
         "audio/ogg; codecs=opus": 192,
         "audio/mpeg": {
             "cbr": 320,
-            "abr": 320,
-            "vbr": 0,  # inverted !
+            "abr": 192,
+            "vbr": 2,  # inverted !
         },
         "audio/x-wav": 16,
         "audio/x-flac": 5,
@@ -198,32 +212,31 @@ def get_default_quality(mime, mode="vbr"):
 
 
 def get_quality(mime, value, mode="vbr", reverse=False):
-    """Map an integer between 0 and 5 to a proper quality/compression value.
+    """Map a quality index to the corresponding format-specific value.
 
     Parameters
     ----------
     mime : string
-        mime type
+        MIME type of the output format.
     value : number
-        between 0 and 5, or 0 and 2 for flac and wav. -1 indexes the highest
-        quality.
+        Quality index, or a format-specific quality value when reverse=True.
+        An index of -1 selects the highest available quality.
     mode : string
-        one of 'cbr', 'abr' and 'vbr' for mp3
+        One of 'cbr', 'abr', and 'vbr' for MP3.
     reverse : bool
-        default False. If True, this function returns the original
-        value-parameter given a quality setting. Value becomes the input for
-        the quality then.
+        If False, return the format-specific quality value for the given
+        index. If True, return the index corresponding to the given
+        format-specific quality value.
     """
 
-    # get 6-tuple of qualities
+    # get all available qualities
     qualities = {
-        "audio/x-vorbis": (0.0, 0.2, 0.4, 0.6, 0.8, 1.0),
-        "audio/x-m4a": (64, 96, 128, 192, 256, 320),
-        "audio/ogg; codecs=opus": (48, 64, 96, 128, 160, 192),
+        "audio/x-vorbis": (-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0),
+        "audio/ogg; codecs=opus": (48, 64, 96, 128, 160, 192, 224, 256, 320),
         "audio/mpeg": {
-            "cbr": (64, 96, 128, 192, 256, 320),
-            "abr": (64, 96, 128, 192, 256, 320),
-            "vbr": (9, 7, 5, 3, 1, 0),  # inverted !
+            "cbr": (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320),
+            "abr": (8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320),
+            "vbr": (9, 8, 7, 6, 5, 4, 3, 2, 1, 0),  # inverted !
         },
         "audio/x-wav": (8, 16, 32),
         "audio/x-flac": (0, 5, 8),
@@ -249,15 +262,16 @@ def get_quality(mime, value, mode="vbr", reverse=False):
         # it has predefined qualities as opposed to batch. So this is
         # either a setting leaking from some tests or the batch mode
         # persisted something.
-        if mime == "mp3":
+        if mime == "audio/mpeg":
             ftype_mode = f"{mime} {mode}"
         else:
             ftype_mode = mime
-        logger.warning(f"tried to index unknow {ftype_mode} quality {value}")
+        logger.warning(f"tried to index unknown {ftype_mode} quality {value}")
         return None
     # normal index
-    if value > len(qualities):
+    if value < -len(qualities) or value >= len(qualities):
         raise ValueError(
-            f"quality index {value} has to be < {len(qualities)}",
+            f"quality index {value} has to be between "
+            f"{-len(qualities)} and {len(qualities) - 1}",
         )
     return qualities[value]

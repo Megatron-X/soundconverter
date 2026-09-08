@@ -120,7 +120,7 @@ def parse_command_line():
             "\nExamples:\n"
             "  soundconverter -b [input paths] -f flac -o [output path]\n"
             "  soundconverter -b ./file_1.flac ./file_2.flac -f mp3 -q 0 -m vbr -o ~/compressed -e skip\n"
-            "  soundconverter -b ~/music -r -f m4a -q 320 -o /mnt/sd/compressed -p {artist}/{title}\n"
+            "  soundconverter -b ~/music -r -f m4a -q 5 -o /mnt/sd/compressed -p {artist}/{title}\n"
         ),
     )
     parser.add_option(
@@ -263,12 +263,12 @@ def parse_command_line():
         metavar="NUM",
         help=_(
             "Quality of the converted output file. Possible values: "
-            "vorbis: 0.0 - 1.0; "
-            "aac/m4a: 0 - 400; "
-            "opus: 6 - 510; "
+            "vorbis: -0.1 - 1.0 (Q-1 - Q10); "
+            "aac/m4a: 1 - 5 (VBR preset); "
+            "opus: 4 - 650; "
             "mp3 vbr: 9 (low) - 0 (high); "
-            "mp3 abr: 64 - 320; "
-            "mp3 cbr: 64 - 320; "
+            "mp3 abr: 8 - 320 (kbps); "
+            "mp3 cbr: 8 - 320 (kbps); "
             "wav: 8, 16, 32 (bitdepth); "
             "flac: 0 - 8 (compression strength)",
         ),

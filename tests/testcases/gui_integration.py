@@ -25,6 +25,7 @@ import os
 import shutil
 import time
 import unittest
+from gettext import gettext as _
 from unittest.mock import patch
 
 from gi.repository import GLib, GObject, Gst, Gtk
@@ -47,13 +48,14 @@ cwd = os.getcwd()
 class GUIIntegration(unittest.TestCase):
     def setUp(self):
         # reset quality settings, since they may be invalid for the ui mode
-        # (e.g. an aribtrary mp3 quality of 200 does not exist for the ui)
+        # (e.g. an arbitrary mp3 quality of 200 does not exist for the ui)
         gio_settings = get_gio_settings()
         gio_settings.set_int("mp3-abr-quality", get_quality("audio/mpeg", -1, "abr"))
         gio_settings.set_int("mp3-vbr-quality", get_quality("audio/mpeg", -1, "vbr"))
         gio_settings.set_int("mp3-cbr-quality", get_quality("audio/mpeg", -1, "cbr"))
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", -1))
-        gio_settings.set_int("aac-quality", get_quality("audio/x-m4a", -1))
+        gio_settings.set_int("opus-bitrate", 192)
+        gio_settings.set_int("aac-vbr-preset", 3)
+        gio_settings.set_boolean("aac-afterburner", True)
         gio_settings.set_double("vorbis-quality", get_quality("audio/x-vorbis", -1))
         gio_settings.set_boolean("delete-original", False)
 
@@ -87,7 +89,7 @@ class GUIIntegration(unittest.TestCase):
 
     def test_conversion_simple(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", 3))
+        gio_settings.set_int("opus-bitrate", 192)
 
         launch(["tests/test data/audio/a.wav"])
         self.assertEqual(settings["main"], "gui")
@@ -106,7 +108,7 @@ class GUIIntegration(unittest.TestCase):
 
     def test_conversion(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", 3))
+        gio_settings.set_int("opus-bitrate", 192)
 
         launch(
             [
@@ -207,7 +209,7 @@ class GUIIntegration(unittest.TestCase):
 
     def test_pause_resume(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", 3))
+        gio_settings.set_int("opus-bitrate", 192)
 
         launch(["tests/test data/audio/a.wav"])
         self.assertEqual(settings["main"], "gui")
@@ -276,7 +278,7 @@ class GUIIntegration(unittest.TestCase):
 
     def test_cancel(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", 3))
+        gio_settings.set_int("opus-bitrate", 192)
 
         launch(["tests/test data/audio/a.wav"])
         self.assertEqual(settings["main"], "gui")
@@ -360,7 +362,8 @@ class GUIIntegration(unittest.TestCase):
 
     def test_conversion_pattern(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("aac-quality", get_quality("audio/x-m4a", 3))
+        gio_settings.set_int("aac-vbr-preset", 3)
+        gio_settings.set_boolean("aac-afterburner", True)
 
         gio_settings.set_int("name-pattern-index", -1)
         filename_pattern = "{Title}/f o"
@@ -398,19 +401,25 @@ class GUIIntegration(unittest.TestCase):
         self.assertTrue(os.path.isfile("tests/test data/audio/strângë chàrs фズ.wav"))
 
         self.assertTrue(os.path.isdir("tests/tmp/"))
+
+        unknown_artist = _("Unknown Artist")
+        unknown_album = _("Unknown Album")
+
         self.assertTrue(
-            os.path.isfile("tests/tmp/Unknown Artist/Unknown Album/a/f o.m4a")
+            os.path.isfile(
+                f"tests/tmp/{unknown_artist}/{unknown_album}/a/f o.m4a"
+            )
         )
         self.assertTrue(
             os.path.isfile(
-                "tests/tmp/Unknown Artist/Unknown Album/strângë chàrs фズ/f o.m4a"
+                f"tests/tmp/{unknown_artist}/{unknown_album}/strângë chàrs фズ/f o.m4a"
             )
         )
         self.assertTrue(os.path.isfile("tests/tmp/test_artist/test_album/c/f o.m4a"))
 
     def test_non_overwriting(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", 3))
+        gio_settings.set_int("opus-bitrate", 192)
 
         launch(["tests/test data/audio/a.wav"])
         self.assertEqual(settings["main"], "gui")
@@ -429,7 +438,7 @@ class GUIIntegration(unittest.TestCase):
 
     def test_delete_original(self):
         gio_settings = get_gio_settings()
-        gio_settings.set_int("opus-bitrate", get_quality("audio/ogg; codecs=opus", 3))
+        gio_settings.set_int("opus-bitrate", 192)
         gio_settings.set_boolean("delete-original", True)
 
         os.system('cp "tests/test data/audio/a.wav" "tests/tmp/a.wav"')
@@ -459,7 +468,7 @@ class GUIIntegration(unittest.TestCase):
         mime_to_delete, encoder_to_delete, display_name_to_delete = encoders[1]
         selected_index = 2
         mime_to_select = encoders[selected_index][0]
-        # Test doesn't support multiple options like in m4a (faac,avenc_aac)
+        # Test doesn't support multiple encoder options.
         # currently. If needed rewrite this.
         self.assertNotIn(",", encoder_to_delete)
         # This should trigger deleting the mp3 element from the dropdown
@@ -529,18 +538,18 @@ class GUIIntegration(unittest.TestCase):
 
     # prevent tests stalling on error
     @patch("soundconverter.interface.ui.ErrorDialog.show_error")
-    def test_all_m4a_encoders(self, mock_handler):
-        # don't test unavalable encoders
+    def test_m4a_encoder(self, mock_handler):
+        # don't test unavailable encoders
         encoders = [
             encoder
-            for encoder in ["fdkaacenc", "faac", "avenc_aac"]
+            for encoder in ["fdkaacenc"]
             if encoder in original_available_elements
         ]
 
         for encoder in encoders:
             # create one large and one small file to test if the quality
             # setting is respected
-            for quality_index in [0, 5]:
+            for quality_index in [0, 4]:
                 launch(["tests/test data/audio/a.wav"])
                 window = win[0]
                 window.prefs.change_mime_type("audio/x-m4a")
@@ -551,7 +560,7 @@ class GUIIntegration(unittest.TestCase):
                     def get_active(self):
                         return quality_index
 
-                window.prefs.on_aac_quality_changed(FakeComboBox())
+                window.prefs.on_aac_vbr_preset_changed(FakeComboBox())
 
                 get_gio_settings().set_string(
                     "selected-folder",
@@ -560,18 +569,18 @@ class GUIIntegration(unittest.TestCase):
                 )
 
                 available_elements.clear()
-                available_elements.update({encoder, "mp4mux"})
+                available_elements.update({encoder, "aacparse", "mp4mux"})
                 window.on_convert_button_clicked()
                 self._wait_for_conversion_to_finish(window)
                 win[0].close()
 
-            path_5 = f"tests/tmp/{encoder}/5/a.m4a"
+            path_4 = f"tests/tmp/{encoder}/4/a.m4a"
             path_0 = f"tests/tmp/{encoder}/0/a.m4a"
-            self.assertTrue(path_5)
-            self.assertTrue(path_0)
-            size_5 = os.path.getsize(path_5)
+            self.assertTrue(os.path.isfile(path_4))
+            self.assertTrue(os.path.isfile(path_0))
+            size_4 = os.path.getsize(path_4)
             size_0 = os.path.getsize(path_0)
-            self.assertLess(size_0, size_5)
+            self.assertLess(size_0, size_4)
 
     def test_ignores_example_name_errors(self):
         # https://bugs.launchpad.net/soundconverter/+bug/1934517

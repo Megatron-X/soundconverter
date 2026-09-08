@@ -76,6 +76,97 @@ Gautier Portet</property>
     <property name="value">6</property>
     <property name="step-increment">1</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment_opus_bitrate">
+    <property name="lower">4</property>
+    <property name="upper">650</property>
+    <property name="value">192</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">16</property>
+  </object>
+  <object class="GtkListStore" id="liststore_opus_bitrate_type">
+    <columns>
+      <column type="gchararray"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">vbr</col>
+        <col id="1" translatable="yes">VBR</col>
+      </row>
+      <row>
+        <col id="0">constrained-vbr</col>
+        <col id="1" translatable="yes">Constrained VBR</col>
+      </row>
+      <row>
+        <col id="0">cbr</col>
+        <col id="1" translatable="yes">CBR</col>
+      </row>
+  </data>
+  </object>
+  <object class="GtkListStore" id="liststore_opus_audio_type">
+    <columns>
+      <column type="gchararray"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">generic</col>
+        <col id="1" translatable="yes">Generic / Music</col>
+      </row>
+      <row>
+        <col id="0">voice</col>
+        <col id="1" translatable="yes">Voice</col>
+      </row>
+  </data>
+  </object>
+  <object class="GtkListStore" id="liststore_opus_bandwidth">
+    <columns>
+      <column type="gchararray"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row><col id="0">auto</col><col id="1" translatable="yes">Auto</col></row>
+      <row><col id="0">narrowband</col><col id="1" translatable="yes">Narrowband</col></row>
+      <row><col id="0">mediumband</col><col id="1" translatable="yes">Mediumband</col></row>
+      <row><col id="0">wideband</col><col id="1" translatable="yes">Wideband</col></row>
+      <row><col id="0">superwideband</col><col id="1" translatable="yes">Superwideband</col></row>
+      <row><col id="0">fullband</col><col id="1" translatable="yes">Fullband</col></row>
+  </data>
+  </object>
+  <object class="GtkListStore" id="liststore_opus_frame_size">
+    <columns>
+      <column type="gchararray"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row><col id="0">2.5</col><col id="1">2.5 ms</col></row>
+      <row><col id="0">5</col><col id="1">5 ms</col></row>
+      <row><col id="0">10</col><col id="1">10 ms</col></row>
+      <row><col id="0">20</col><col id="1">20 ms</col></row>
+      <row><col id="0">40</col><col id="1">40 ms</col></row>
+      <row><col id="0">60</col><col id="1">60 ms</col></row>
+  </data>
+  </object>
+  <object class="GtkListStore" id="liststore_mp3_engine_quality">
+  <columns>
+    <column type="gchararray"/>
+    <column type="gchararray"/>
+  </columns>
+  <data>
+    <row>
+      <col id="0">fast</col>
+      <col id="1" translatable="yes">Fast</col>
+    </row>
+    <row>
+      <col id="0">standard</col>
+      <col id="1" translatable="yes">Standard</col>
+    </row>
+    <row>
+      <col id="0">high</col>
+      <col id="1" translatable="yes">High</col>
+    </row>
+  </data>
+</object>
   <object class="GtkDialog" id="error_dialog">
     <property name="can-focus">False</property>
     <property name="title" translatable="yes">Error</property>
@@ -452,6 +543,29 @@ Gautier Portet</property>
       </row>
     </data>
   </object>
+      <object class="GtkListStore" id="liststore_aac_vbr">
+    <columns>
+      <!-- column-name item -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Very Low (VBR 1)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Low (VBR 2)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Medium (VBR 3)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">High (VBR 4)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Very High (VBR 5)</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkListStore" id="liststore3">
     <columns>
       <!-- column-name item -->
@@ -530,31 +644,49 @@ Gautier Portet</property>
     </data>
   </object>
   <object class="GtkListStore" id="liststore7">
-    <columns>
-      <!-- column-name item -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Very Low</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Low</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Normal</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">High</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Very High</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Insanely High</col>
-      </row>
-    </data>
-  </object>
+  <columns>
+    <!-- column-name item -->
+    <column type="gchararray"/>
+  </columns>
+  <data>
+    <row>
+      <col id="0" translatable="yes">Q-1 (Lowest)</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q0</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q1</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q2</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q3</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q4</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q5</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q6</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q7</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q8</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q9</col>
+    </row>
+    <row>
+      <col id="0" translatable="yes">Q10 (Highest)</col>
+    </row>
+  </data>
+</object>
   <object class="GtkListStore" id="liststore8">
     <columns>
       <!-- column-name item -->
@@ -1254,6 +1386,43 @@ Gautier Portet</property>
                                         <property name="y-options"/>
                                       </packing>
                                     </child>
+                                    <!-- MP3 encoding engine quality -->
+                                    <child>
+                                      <object class="GtkLabel" id="mp3_engine_quality_label">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Encoding engine quality:</property>
+                                        <property name="xalign">0</property>
+                                      </object>
+                                      <packing>
+                                        <property name="top-attach">2</property>
+                                        <property name="bottom-attach">3</property>
+                                        <property name="x-options">GTK_FILL</property>
+                                        <property name="y-options"/>
+                                      </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkComboBox" id="mp3_engine_quality">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="model">liststore_mp3_engine_quality</property>
+                                          <property name="id-column">0</property>
+                                          <signal name="changed" handler="on_mp3_engine_quality_changed" swapped="no"/>
+                                      <child>
+                                        <object class="GtkCellRendererText" id="cellrenderertext_mp3_engine_quality"/>
+                                        <attributes>
+                                          <attribute name="text">1</attribute>
+                                        </attributes>
+                                        </child>
+                                        </object>
+                                          <packing>
+                                            <property name="left-attach">1</property>
+                                            <property name="right-attach">2</property>
+                                            <property name="top-attach">2</property>
+                                            <property name="bottom-attach">3</property>
+                                            <property name="y-options"/>
+                                      </packing>
+                                    </child>
                                     <child>
                                       <object class="GtkBox" id="hbox1">
                                         <property name="visible">True</property>
@@ -1434,17 +1603,11 @@ Gautier Portet</property>
                                     <property name="column-spacing">6</property>
                                     <property name="row-spacing">6</property>
                                     <child>
-                                      <placeholder/>
-                                    </child>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                    <child>
                                       <object class="GtkLabel" id="label38">
                                         <property name="width-request">100</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="label" translatable="yes">Quality:</property>
+                                        <property name="label" translatable="yes">VBR Quality:</property>
                                         <property name="xalign">0</property>
                                       </object>
                                       <packing>
@@ -1453,13 +1616,13 @@ Gautier Portet</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkComboBox" id="aac_quality">
+                                      <object class="GtkComboBox" id="aac_vbr_preset">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="model">liststore2</property>
-                                        <signal name="changed" handler="on_aac_quality_changed" swapped="no"/>
+                                        <property name="model">liststore_aac_vbr</property>
+                                        <signal name="changed" handler="on_aac_vbr_preset_changed" swapped="no"/>
                                         <child>
-                                          <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                                          <object class="GtkCellRendererText" id="cellrenderertext_aac_vbr"/>
                                           <attributes>
                                             <attribute name="text">0</attribute>
                                           </attributes>
@@ -1468,6 +1631,38 @@ Gautier Portet</property>
                                       <packing>
                                         <property name="left-attach">1</property>
                                         <property name="right-attach">2</property>
+                                        <property name="y-options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="aac_afterburner_label">
+                                        <property name="width-request">100</property>
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Afterburner:</property>
+                                        <property name="xalign">0</property>
+                                      </object>
+                                      <packing>
+                                        <property name="top-attach">1</property>
+                                        <property name="bottom-attach">2</property>
+                                        <property name="x-options">GTK_FILL</property>
+                                        <property name="y-options"/>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkCheckButton" id="aac_afterburner">
+                                        <property name="label" translatable="yes">Enabled</property>
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="receives-default">False</property>
+                                        <property name="draw-indicator">True</property>
+                                        <signal name="toggled" handler="on_aac_afterburner_toggled" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="right-attach">2</property>
+                                        <property name="top-attach">1</property>
+                                        <property name="bottom-attach">2</property>
                                         <property name="y-options">GTK_FILL</property>
                                       </packing>
                                     </child>
@@ -1491,49 +1686,178 @@ Gautier Portet</property>
                                   <object class="GtkTable" id="table5b">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="n-rows">2</property>
+                                    <property name="n-rows">5</property>
                                     <property name="n-columns">2</property>
                                     <property name="column-spacing">6</property>
                                     <property name="row-spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="opus_bitrate_label">
+                                    <property name="width-request">100</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="label" translatable="yes">Bitrate:</property>
+                                    <property name="xalign">0</property>
+                                </object>
+                                  <packing>
+                                    <property name="x-options">GTK_FILL</property>
+                                    <property name="y-options"/>
+                                </packing>
+                              </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="opus_bitrate">
+                                  <property name="visible">True</property>
+                                  <property name="can-focus">True</property>
+                                  <property name="adjustment">adjustment_opus_bitrate</property>
+                                  <property name="numeric">True</property>
+                                  <signal name="value-changed" handler="on_opus_bitrate_changed" swapped="no"/>
+                                </object>
+                                  <packing>
+                                    <property name="left-attach">1</property>
+                                    <property name="right-attach">2</property>
+                                    <property name="y-options">GTK_FILL</property>
+                                  </packing>
+                                 </child>
                                     <child>
-                                      <placeholder/>
-                                    </child>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label38b">
-                                        <property name="width-request">100</property>
+                                      <object class="GtkLabel" id="opus_bitrate_type_label">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="label" translatable="yes">Quality:</property>
+                                        <property name="label" translatable="yes">Bitrate mode:</property>
                                         <property name="xalign">0</property>
                                       </object>
-                                      <packing>
-                                        <property name="x-options">GTK_FILL</property>
-                                        <property name="y-options"/>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkComboBox" id="opus_quality">
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">False</property>
-                                        <property name="model">liststore2</property>
-                                        <signal name="changed" handler="on_opus_quality_changed" swapped="no"/>
-                                        <child>
-                                          <object class="GtkCellRendererText" id="cellrenderertext2b"/>
-                                          <attributes>
-                                            <attribute name="text">0</attribute>
-                                          </attributes>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="left-attach">1</property>
-                                        <property name="right-attach">2</property>
-                                        <property name="y-options">GTK_FILL</property>
-                                      </packing>
-                                    </child>
-                                  </object>
+                                        <packing>
+                                          <property name="top-attach">1</property>
+                                          <property name="bottom-attach">2</property>
+                                          <property name="x-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkComboBox" id="opus_bitrate_type">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="model">liststore_opus_bitrate_type</property>
+                                          <property name="id-column">0</property>
+                                          <signal name="changed" handler="on_opus_bitrate_type_changed" swapped="no"/>
+                                          <child>
+                                            <object class="GtkCellRendererText" id="cellrenderer_opus_bitrate_type"/>
+                                            <attributes>
+                                              <attribute name="text">1</attribute>
+                                            </attributes>
+                                          </child>
+                                        </object>
+                                        <packing>
+                                          <property name="left-attach">1</property>
+                                          <property name="right-attach">2</property>
+                                          <property name="top-attach">1</property>
+                                          <property name="bottom-attach">2</property>
+                                          <property name="y-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkLabel" id="opus_audio_type_label">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="label" translatable="yes">Audio type:</property>
+                                          <property name="xalign">0</property>
+                                        </object>
+                                        <packing>
+                                          <property name="top-attach">2</property>
+                                          <property name="bottom-attach">3</property>
+                                          <property name="x-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkComboBox" id="opus_audio_type">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="model">liststore_opus_audio_type</property>
+                                          <property name="id-column">0</property>
+                                          <signal name="changed" handler="on_opus_audio_type_changed" swapped="no"/>
+                                          <child>
+                                            <object class="GtkCellRendererText" id="cellrenderer_opus_audio_type"/>
+                                            <attributes>
+                                              <attribute name="text">1</attribute>
+                                            </attributes>
+                                          </child>
+                                        </object>
+                                        <packing>
+                                          <property name="left-attach">1</property>
+                                          <property name="right-attach">2</property>
+                                          <property name="top-attach">2</property>
+                                          <property name="bottom-attach">3</property>
+                                          <property name="y-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkLabel" id="opus_bandwidth_label">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="label" translatable="yes">Bandwidth:</property>
+                                          <property name="xalign">0</property>
+                                        </object>
+                                        <packing>
+                                          <property name="top-attach">3</property>
+                                          <property name="bottom-attach">4</property>
+                                          <property name="x-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkComboBox" id="opus_bandwidth">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="model">liststore_opus_bandwidth</property>
+                                          <property name="id-column">0</property>
+                                          <signal name="changed" handler="on_opus_bandwidth_changed" swapped="no"/>
+                                          <child>
+                                            <object class="GtkCellRendererText" id="cellrenderer_opus_bandwidth"/>
+                                            <attributes>
+                                              <attribute name="text">1</attribute>
+                                            </attributes>
+                                          </child>
+                                        </object>
+                                        <packing>
+                                          <property name="left-attach">1</property>
+                                          <property name="right-attach">2</property>
+                                          <property name="top-attach">3</property>
+                                          <property name="bottom-attach">4</property>
+                                          <property name="y-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkLabel" id="opus_frame_size_label">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="label" translatable="yes">Frame size:</property>
+                                          <property name="xalign">0</property>
+                                        </object>
+                                        <packing>
+                                          <property name="top-attach">4</property>
+                                          <property name="bottom-attach">5</property>
+                                          <property name="x-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                      <child>
+                                        <object class="GtkComboBox" id="opus_frame_size">
+                                          <property name="visible">True</property>
+                                          <property name="can-focus">False</property>
+                                          <property name="model">liststore_opus_frame_size</property>
+                                          <property name="id-column">0</property>
+                                          <signal name="changed" handler="on_opus_frame_size_changed" swapped="no"/>
+                                          <child>
+                                            <object class="GtkCellRendererText" id="cellrenderer_opus_frame_size"/>
+                                            <attributes>
+                                              <attribute name="text">1</attribute>
+                                            </attributes>
+                                          </child>
+                                        </object>
+                                        <packing>
+                                          <property name="left-attach">1</property>
+                                          <property name="right-attach">2</property>
+                                          <property name="top-attach">4</property>
+                                          <property name="bottom-attach">5</property>
+                                          <property name="y-options">GTK_FILL</property>
+                                        </packing>
+                                      </child>
+                                    </object>
                                   <packing>
                                     <property name="position">5</property>
                                   </packing>

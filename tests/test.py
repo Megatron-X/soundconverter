@@ -7,6 +7,9 @@ import sys
 import unittest
 import os
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJECT_ROOT)
+
 import gi
 
 gi.require_version("GstPbutils", "1.0")
@@ -28,7 +31,8 @@ Gtk.main = gtk_iteration
 Gtk.main_quit = lambda: None
 
 if __name__ == "__main__":
-    args = Gst.init(sys.argv)
+    Gst.init(sys.argv)
+    args = sys.argv
 
     if len(args) > 1 and os.path.isdir(args[1]):
         util.BUILD_DIR = args[1]
