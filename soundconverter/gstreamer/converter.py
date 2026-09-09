@@ -434,7 +434,16 @@ class Converter(Task):
             # Copy file permissions
             source = Gio.file_parse_name(self.sound_file.uri)
             destination = Gio.file_parse_name(newname)
-            source.copy_attributes(destination, Gio.FileCopyFlags.ALL_METADATA)
+            info = source.query_info(
+                Gio.FILE_ATTRIBUTE_UNIX_MODE,
+                Gio.FileQueryInfoFlags.NONE,
+            )
+            mode = info.get_attribute_uint32(Gio.FILE_ATTRIBUTE_UNIX_MODE)
+            destination.set_attribute_uint32(
+                Gio.FILE_ATTRIBUTE_UNIX_MODE,
+                mode,
+                Gio.FileQueryInfoFlags.NONE,
+            )
         except Exception as error:
             logger.error(
                 f"Could not set some attributes of the target '{beautify_uri(newname)}': {str(error)}",
