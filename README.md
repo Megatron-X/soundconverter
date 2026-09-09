@@ -55,6 +55,27 @@ testing while preserving SoundConverter's simple interface.
 
 ## Screenshots
 
+### Main Window
+
+<p align="center">
+  <img src="docs/screenshots/soundconverter-x-main.png"
+       alt="SoundConverter X main window" width="700"/>
+</p>
+
+### Application Menu
+
+<p align="center">
+  <img src="docs/screenshots/soundconverter-x-menu.png"
+       alt="SoundConverter X application menu" width="700"/>
+</p>
+
+### About
+
+<p align="center">
+  <img src="docs/screenshots/soundconverter-x-about.png"
+       alt="SoundConverter X About dialog" width="700"/>
+</p>
+
 ### Opus
 
 <p align="center">
