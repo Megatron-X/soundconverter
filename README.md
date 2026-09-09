@@ -191,6 +191,8 @@ SoundConverter X is based on the original SoundConverter project:
 
 https://github.com/kassoulet/soundconverter
 
+SoundConverter X is maintained as a downstream fork and periodically incorporates upstream updates while preserving its additional codec controls, packaging changes, and project branding.
+
 ### Copyright and Acknowledgements
 
 Copyright 2004 Lars Wirzenius
