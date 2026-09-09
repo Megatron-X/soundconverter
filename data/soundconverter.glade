@@ -524,22 +524,28 @@ Gautier Portet</property>
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">Very Low</col>
+        <col id="0">64 kbps</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Low</col>
+        <col id="0">96 kbps</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Normal</col>
+        <col id="0">128 kbps</col>
       </row>
       <row>
-        <col id="0" translatable="yes">High</col>
+        <col id="0">160 kbps</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Very High</col>
+        <col id="0">192 kbps</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Insanely High</col>
+        <col id="0">224 kbps</col>
+      </row>
+      <row>
+        <col id="0">256 kbps</col>
+      </row>
+      <row>
+        <col id="0">320 kbps</col>
       </row>
     </data>
   </object>
@@ -1919,7 +1925,7 @@ Gautier Portet</property>
                                         <property name="width-request">100</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="label" translatable="yes">Quality:</property>
+                                        <property name="label" translatable="yes">Bitrate:</property>
                                         <property name="xalign">0</property>
                                       </object>
                                       <packing>

@@ -240,7 +240,7 @@ def get_quality(mime, value, mode="vbr", reverse=False):
         },
         "audio/x-wav": (8, 16, 24, 32),
         "audio/x-flac": (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-        "audio/x-ms-wma": (64, 96, 128, 192, 256, 320),
+        "audio/x-ms-wma": (64, 96, 128, 160, 192, 224, 256, 320),
     }[mime]
 
     if isinstance(qualities, dict):
