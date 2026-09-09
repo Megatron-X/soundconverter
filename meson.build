@@ -160,12 +160,23 @@ gnome.post_install(
   update_desktop_database: true,
 )
 
+test_env = environment()
+test_env.set('PYTHONPATH', meson.project_source_root())
+test_env.set(
+  'GSETTINGS_SCHEMA_DIR',
+  join_paths(meson.project_source_root(), 'data')
+)
+test_env.set(
+  'SOUNDCONVERTER_GLADEFILE',
+  join_paths(meson.project_source_root(), 'data', 'soundconverter.glade')
+)
+
 test(
   'soundconverter-tests',
   py_inst,
-  args: ['tests/test.py', 'builddir'],
+  args: ['tests/test.py', meson.project_build_root()],
   workdir: meson.project_source_root(),
   is_parallel: false,
   verbose: true,
-  env: {'PYTHONPATH': meson.project_source_root()}
+    env: test_env
 )

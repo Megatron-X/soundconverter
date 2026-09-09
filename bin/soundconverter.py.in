@@ -25,6 +25,7 @@
 
 import gettext
 import locale
+import os
 import sys
 from optparse import OptionGroup, OptionParser
 
@@ -33,7 +34,10 @@ _ = gettext.gettext
 # read values from package metadata
 NAME = "soundconverter"
 VERSION = "@VERSION@"
-GLADEFILE = "@GLADEFILE_PATH@"
+GLADEFILE = os.environ.get(
+    "SOUNDCONVERTER_GLADEFILE",
+    "@GLADEFILE_PATH@",
+)
 LOCALEDIR = "@LOCALEDIR@"
 
 
