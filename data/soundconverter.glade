@@ -590,13 +590,34 @@ Gautier Portet</property>
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">Less (Faster)</col>
+        <col id="0" translatable="yes">0 - Fastest</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Default</col>
+        <col id="0">1</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Better (Slower)</col>
+        <col id="0">2</col>
+      </row>
+      <row>
+        <col id="0">3</col>
+      </row>
+      <row>
+        <col id="0">4</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">5 - Default</col>
+      </row>
+      <row>
+        <col id="0">6</col>
+      </row>
+      <row>
+        <col id="0">7</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">8 - Highest compression</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">9 - Insane</col>
       </row>
     </data>
   </object>

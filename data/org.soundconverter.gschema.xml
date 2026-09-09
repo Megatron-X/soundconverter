@@ -155,7 +155,8 @@
       <description></description>
     </key>
     <key name="flac-compression" type="i">
-      <default>8</default>
+      <default>5</default>
+      <range min="0" max="9"/>
       <summary>Flac compression level</summary>
       <description></description>
     </key>

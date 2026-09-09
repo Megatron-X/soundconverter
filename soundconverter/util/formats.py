@@ -239,7 +239,7 @@ def get_quality(mime, value, mode="vbr", reverse=False):
             "vbr": (9, 8, 7, 6, 5, 4, 3, 2, 1, 0),  # inverted !
         },
         "audio/x-wav": (8, 16, 32),
-        "audio/x-flac": (0, 5, 8),
+        "audio/x-flac": (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
         "audio/x-ms-wma": (64, 96, 128, 192, 256, 320),
     }[mime]
 
