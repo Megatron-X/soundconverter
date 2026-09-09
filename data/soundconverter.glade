@@ -15,7 +15,7 @@
     © 2020-2025 Sezanzeb &lt;proxima@hip70890b.de&gt;
     </property>
     <property name="comments" translatable="yes">GNOME-powered Sound Conversion</property>
-    <property name="website">http://soundconverter.org</property>
+    <property name="website">https://github.com/Megatron-X/soundconverter</property>
     <property name="website-label" translatable="yes">Website</property>
     <property name="authors">Lars Wirzenius
 Gautier Portet</property>

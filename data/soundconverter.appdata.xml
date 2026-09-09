@@ -15,22 +15,23 @@ SoundConverter X is a simple to use, fast audio converter with advanced codec co
   </description>
   <screenshots>
     <screenshot height="534" width="502" type="default">
-      <image>https://soundconverter.org/screenshot-soundconverter.png</image>
+      <image>https://raw.githubusercontent.com/Megatron-X/soundconverter/main/docs/screenshots/soundconverter-x-main.png</image>
       <caption>SoundConverter X Screenshot</caption>
     </screenshot>
   </screenshots>
   <update_contact>gautier@soundconverter.org</update_contact>
   <developer_name translatable="no">Gautier Portet</developer_name>
 
-  <url type="homepage">https://soundconverter.org/</url>
-  <url type="bugtracker">https://bugs.launchpad.net/soundconverter</url>
-  <url type="vcs-browser">https://github.com/kassoulet/soundconverter</url>
+  <url type="homepage">https://github.com/Megatron-X/soundconverter</url>
+  <url type="bugtracker">https://github.com/Megatron-X/soundconverter/issues</url>
+  <url type="vcs-browser">https://github.com/Megatron-X/soundconverter</url>
   <url type="translate">https://translations.launchpad.net/soundconverter</url>
 
   <content_rating type="oars-1.1" />
   <launchable type="desktop-id">soundconverter.desktop</launchable>
 
   <releases>
+    <release date="2026-09-09" version="4.2.2" />
     <release date="2025-07-27" version="4.1.1" />
     <release date="2025-06-23" version="4.1.0"/>
     <release date="2024-10-30" version="4.0.6"/>
