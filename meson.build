@@ -1,6 +1,6 @@
 project(
   'soundconverter',
-  version: '4.2.1',
+  version: '4.2.2',
   license: 'GPL3+',
   meson_version: '>= 0.62.0',
   default_options: [
