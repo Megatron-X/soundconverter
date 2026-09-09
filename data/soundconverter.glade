@@ -579,6 +579,9 @@ Gautier Portet</property>
         <col id="0" translatable="yes">16 bits (default)</col>
       </row>
       <row>
+        <col id="0" translatable="yes">24 bits</col>
+      </row>
+      <row>
         <col id="0" translatable="yes">32 bits</col>
       </row>
     </data>

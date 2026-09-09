@@ -85,6 +85,7 @@ class Format(unittest.TestCase):
         self.assertEqual(get_bitrate_from_settings(), "N/A")
 
         get_gio_settings().set_string("output-mime-type", "audio/x-wav")
+        get_gio_settings().set_int("wav-sample-width", 16)
         get_gio_settings().set_boolean("output-resample", False)
         rate = 705.6
         self.assertEqual(get_bitrate_from_settings(), f"{rate} kbps")
@@ -92,6 +93,8 @@ class Format(unittest.TestCase):
         get_gio_settings().set_int("resample-rate", 44100)
         get_gio_settings().set_int("wav-sample-width", 16)
         self.assertEqual(get_bitrate_from_settings(), f"{rate} kbps")
+        get_gio_settings().set_int("wav-sample-width", 24)
+        self.assertEqual(get_bitrate_from_settings(), f"{rate * 1.5} kbps")
         get_gio_settings().set_int("wav-sample-width", 32)
         self.assertEqual(get_bitrate_from_settings(), f"{rate * 2} kbps")
         get_gio_settings().set_int("wav-sample-width", 8)
