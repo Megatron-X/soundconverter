@@ -3,20 +3,20 @@
   <id>soundconverter.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0</project_license>
-  <name>SoundConverter</name>
+  <name>SoundConverter X</name>
   <summary>Convert audio files</summary>
   <description>
 <p>
-SoundConverter is the leading audio file converter for the GNOME Desktop.
+SoundConverter X is an enhanced audio file converter for the GNOME Desktop.
 </p>
 <p>
-SoundConverter is a simple to use, and very fast audio converter. It can convert multiples files at same the time to speed up the conversion. It can also extract the audio from videos. 
+SoundConverter X is a simple to use, fast audio converter with advanced codec controls. It can convert multiple files at the same time to speed up conversion. It can also extract the audio from videos.
 </p>
   </description>
   <screenshots>
     <screenshot height="534" width="502" type="default">
       <image>https://soundconverter.org/screenshot-soundconverter.png</image>
-      <caption>SoundConverter Screenshot</caption>
+      <caption>SoundConverter X Screenshot</caption>
     </screenshot>
   </screenshots>
   <update_contact>gautier@soundconverter.org</update_contact>

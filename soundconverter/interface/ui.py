@@ -302,7 +302,7 @@ class SoundConverterWindow(GladeWindow):
 
             if converter_queue.paused:
                 self.progressbar.set_text(_("Paused"))
-                title = "{} - {}".format(_("SoundConverter"), _("Paused"))
+                title = "{} - {}".format("SoundConverter X", _("Paused"))
                 self.widget.set_title(title)
                 return None
 
@@ -325,7 +325,7 @@ class SoundConverterWindow(GladeWindow):
                 )
                 self.progressbar.set_text(remaining)
                 self.progressbar.set_show_text(True)
-                title = "{} - {}".format(_("SoundConverter"), remaining)
+                title = "{} - {}".format("SoundConverter X", remaining)
                 self.widget.set_title(title)
 
         # return True to keep the GLib timeout running
@@ -473,7 +473,7 @@ class SoundConverterWindow(GladeWindow):
         if not text:
             text = _("Ready")
         if ready:
-            self.widget.set_title(_("SoundConverter"))
+            self.widget.set_title("SoundConverter X")
         self.statustext.set_markup(text)
         self.set_sensitive()
         gtk_iteration(True)
@@ -520,7 +520,7 @@ def gui_main(name, version, gladefile, input_files):
     """
     global NAME, VERSION
     NAME, VERSION = name, version
-    GLib.set_application_name(name)
+    GLib.set_application_name("SoundConverter X")
     GLib.set_prgname(name)
 
     input_files = list(map(filename_to_uri, input_files))
