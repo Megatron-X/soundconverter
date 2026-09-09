@@ -1,7 +1,7 @@
 pkgname=soundconverter-x
 pkgver=4.2.2
 pkgrel=2
-_commit=a5393bc9231c13d8a7242bb8c4e08df21e8aa24d
+_commit=bef0f99b042a770e6bc84ba1bcbfcdaffe0d722c
 pkgdesc='GNOME sound converter with advanced codec controls and high-quality GStreamer encoding options'
 arch=('any')
 url='https://github.com/Megatron-X/soundconverter'
@@ -29,7 +29,7 @@ provides=('soundconverter')
 conflicts=('soundconverter')
 
 source=("$pkgname-$pkgver-$_commit.tar.gz::$url/archive/$_commit.tar.gz")
-sha256sums=('3a51741b1529f3a36a109eacfdfb54e4e60008956c5e9cf2f3e5393355ffb1b0')
+sha256sums=('1d676067c038bb8e836ea13438de58b2ad6f1e5ad6331aa3f8ce2bb116a80092')
 
 build() {
   arch-meson "soundconverter-$_commit" build
