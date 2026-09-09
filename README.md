@@ -170,11 +170,14 @@ SoundConverter X is based on the original SoundConverter project:
 
 https://github.com/kassoulet/soundconverter
 
-Copyright and Acknowledgements
+### Copyright and Acknowledgements
+
 Copyright 2004 Lars Wirzenius
 Copyright 2005-2025 Gautier Portet
 Copyright 2020-2025 Sezanzeb
+
 Thanks to: Guillaume Bedot, Dominik Zabłotny, Noa Resare, Nil Gradisnik, Elias Autio, Thom Pischke, Qball Cow, Janis Blechert, Brendan Martens, Jason Martens, Wouter Stomp, Joe Wrigley, Jonh Wendell, Regis Floret, Toni Fiz, Seketeli Apelete, Cristiano Canguçu, Adolfo González Blázquez, Marc E., Tobias Kral, Hanno Böck, Pedro Alejandro López-Valencia, James Lee, Christopher Barrington-Leigh, Thomas Schwing, Remi Grolleau, Julien Gascard, Kamil Páral, Stefano Luciani, Martin Seifert, Claudio Saavedra, Ken Harris, Jon Arnold, Major Kong, Uwe Bugla
+
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; version 3 of the License.
