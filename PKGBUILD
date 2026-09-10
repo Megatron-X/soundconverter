@@ -11,6 +11,7 @@ depends=(
   'gst-plugins-base'
   'gst-plugins-good'
   'gst-plugins-bad'
+  'gst-plugins-ugly'
   'gst-python'
   'gtk3'
   'python-gobject'
