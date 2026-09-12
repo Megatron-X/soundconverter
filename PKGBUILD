@@ -14,6 +14,7 @@ depends=(
   'gst-plugins-ugly'
   'gst-python'
   'gtk3'
+  'python-mutagen'
   'python-gobject'
 )
 

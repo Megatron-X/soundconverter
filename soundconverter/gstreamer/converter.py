@@ -23,6 +23,8 @@
 import os
 from gettext import gettext as _
 
+from mutagen.id3 import ID3, ID3NoHeaderError, TXXX
+
 from gi.repository import Gio, GLib, Gst
 
 from soundconverter.util.error import show_error
@@ -226,6 +228,29 @@ def create_wma_encoder():
     return f"avenc_wmav2 bitrate={wma_quality * 1000} ! asfmux"
 
 
+def set_mp3_encoding_mode(filename, mode):
+    """Write the MP3 encoding mode as an ID3 TXXX frame."""
+    if mode not in ("vbr", "abr", "cbr"):
+        return
+
+    try:
+        tags = ID3(filename)
+        id3_version = tags.version[1]
+    except ID3NoHeaderError:
+        tags = ID3()
+        id3_version = 4
+
+    tags.delall("TXXX:Encoding Mode")
+    tags.add(
+        TXXX(
+            encoding=3,
+            desc="Encoding Mode",
+            text=[mode.upper()],
+        )
+    )
+    tags.save(filename, v2_version=id3_version)
+
+
 class Converter(Task):
     """Completely handle the conversion of a single file."""
 
@@ -253,6 +278,7 @@ class Converter(Task):
         # they don't suddenly change during the conversion
         settings = get_gio_settings()
         self.output_mime_type = settings.get_string("output-mime-type")
+        self.mp3_mode = settings.get_string("mp3-mode")
         self.output_resample = settings.get_boolean("output-resample")
         self.resample_rate = settings.get_int("resample-rate")
         self.force_mono = settings.get_boolean("force-mono")
@@ -465,6 +491,24 @@ class Converter(Task):
             logger.error(
                 f"Could not set modification time of the target '{beautify_uri(newname)}': {str(error)}",
             )
+
+        if self.output_mime_type == "audio/mpeg":
+            try:
+                destination = Gio.file_parse_name(newname)
+                filename = destination.get_path()
+
+                if filename is not None:
+                    set_mp3_encoding_mode(filename, self.mp3_mode)
+                else:
+                    logger.warning(
+                        f"Could not write MP3 encoding mode to non-local file "
+                        f"'{beautify_uri(newname)}'"
+                    )
+            except Exception as error:
+                logger.error(
+                    f"Could not write MP3 encoding mode to "
+                    f"'{beautify_uri(newname)}': {str(error)}"
+                )
 
         if self.delete_original and not self.error:
             logger.info(f"deleting: '{self.sound_file.uri}'")
